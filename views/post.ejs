@@ -5,93 +5,98 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Tulis - Luapin Aja</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" name="viewport" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
-    body { font-family: 'Manrope', sans-serif; background: #fdfdff; }
-    .glass-nav { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
-    .glass-form { background: #ffffff; border: 1px solid #f1f5f9; box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.08); }
-    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    body { font-family: 'Manrope', sans-serif; background: #f0f2f5; }
+    .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .social-card { background: #ffffff; border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); border: 1px solid rgba(0,0,0,0.05); }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
     .icon-fill { font-variation-settings: 'FILL' 1; }
 </style>
 </head>
 <body class="text-slate-800 flex flex-col min-h-screen" oncontextmenu="return false;">
 
 <nav class="fixed top-0 w-full z-50 glass-nav">
-<div class="max-w-[800px] mx-auto flex justify-between items-center h-16 px-6">
-    <a href="/" class="flex items-center gap-2 group">
-        <span class="material-symbols-outlined text-indigo-600 icon-fill text-[24px] group-hover:scale-110 transition-transform">psychology_alt</span>
-        <span class="text-xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Luapin Aja</span>
-    </a>
-    <div class="hidden sm:flex items-center gap-6">
-        <a href="/jelajah" class="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Jelajah</a>
+<div class="max-w-[680px] mx-auto flex justify-between items-center h-14 px-4">
+    <div class="flex items-center gap-3">
+        <a href="/jelajah" class="p-2 hover:bg-slate-100 rounded-full transition-colors">
+            <span class="material-symbols-outlined text-slate-600">arrow_back</span>
+        </a>
+        <a href="/" class="flex items-center gap-2 group">
+            <span class="material-symbols-outlined text-indigo-600 icon-fill text-[28px]">psychology_alt</span>
+            <span class="text-lg font-bold tracking-tighter">Luapin Aja</span>
+        </a>
     </div>
 </div>
 </nav>
 
-<main class="flex-grow pt-32 pb-24 px-6 max-w-[800px] w-full mx-auto">
-<header class="mb-8 text-center">
-<h1 class="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">Suarakan Hatimu</h1>
-<p class="text-lg text-slate-500 max-w-xl mx-auto">Aman, rahasia, tanpa login, dan 100% anonim.</p>
-</header>
+<main class="flex-grow pt-20 pb-24 px-4 max-w-[680px] w-full mx-auto">
+<div class="social-card p-6 md:p-8">
+    <header class="mb-8 border-b border-slate-100 pb-6">
+        <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Tulis Pesan Anonim</h1>
+        <p class="text-sm text-slate-500 font-medium">Bagikan apa yang mengganjal di pikiranmu tanpa ragu.</p>
+    </header>
 
-<div class="flex justify-center gap-3 mb-10">
-    <a href="/jelajah" class="px-7 py-2.5 bg-white text-slate-700 text-sm font-bold rounded-full shadow-sm border border-slate-200 hover:bg-slate-50 hover:-translate-y-0.5 transition-transform flex items-center gap-2">
-        <span class="material-symbols-outlined text-[18px]">explore</span> Jelajah
-    </a>
-    <a href="/tulis" class="px-7 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-full shadow-lg hover:-translate-y-0.5 transition-transform flex items-center gap-2">
-        <span class="material-symbols-outlined text-[18px]">edit_square</span> Tulis Pesan
-    </a>
-</div>
-
-<section class="glass-form rounded-3xl p-8 md:p-12 transition-all duration-500">
-<% if (typeof error !== 'undefined' && error === 'captcha') { %>
-    <div class="bg-rose-50 text-rose-600 px-4 py-3 rounded-xl mb-6 text-sm font-bold border border-rose-100 flex items-center gap-2">
-        <span class="material-symbols-outlined">warning</span> Mohon centang keamanan!
-    </div>
-<% } %>
-
-<form action="/tulis" method="POST" class="space-y-6">
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="space-y-3">
-        <label class="text-xs font-bold uppercase tracking-widest text-slate-400">Nama Samaran (Opsional)</label>
-        <input type="text" name="pengirim" placeholder="Kosongkan untuk Anonim" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-6 py-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all">
-    </div>
-
-    <div class="space-y-3">
-        <label class="text-xs font-bold uppercase tracking-widest text-slate-400">Kategori</label>
-        <div class="relative">
-            <select name="category" required class="w-full appearance-none bg-slate-50 border border-slate-200 rounded-xl px-6 py-4 text-sm font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none cursor-pointer">
-                <option value="Tanpa Kategori">Tanpa Kategori</option>
-                <option value="Rahasia Pribadi">Rahasia Pribadi</option>
-                <option value="Cinta & Asmara">Cinta & Asmara</option>
-                <option value="Keluarga">Keluarga</option>
-                <option value="Pertemanan">Pertemanan</option>
-                <option value="Penyesalan">Penyesalan</option>
-            </select>
-            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"><span class="material-symbols-outlined text-slate-400">expand_more</span></div>
+    <% if (typeof error !== 'undefined' && error === 'captcha') { %>
+        <div class="bg-rose-50 text-rose-600 px-4 py-3 rounded-xl mb-6 text-xs font-bold border border-rose-100 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">warning</span> Mohon verifikasi bahwa Anda manusia!
         </div>
-    </div>
+    <% } %>
+
+    <form action="/tulis" method="POST" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="space-y-2">
+                <label class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 ml-1">Nama Samaran (Opsional)</label>
+                <input type="text" name="pengirim" placeholder="Boleh dikosongkan (Anonim)" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                <p class="text-[10px] text-slate-400 ml-1 italic">*Identitasmu tetap rahasia meski diisi.</p>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 ml-1">Kategori</label>
+                <div class="relative">
+                    <select name="category" required class="w-full appearance-none bg-slate-50 border-none rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
+                        <option value="Tanpa Kategori">Tanpa Kategori</option>
+                        <option value="Rahasia Pribadi">Rahasia Pribadi</option>
+                        <option value="Cinta & Asmara">Cinta & Asmara</option>
+                        <option value="Keluarga">Keluarga</option>
+                        <option value="Pertemanan">Pertemanan</option>
+                        <option value="Penyesalan">Penyesalan</option>
+                    </select>
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-2">
+            <label class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 ml-1">Pesan Kamu</label>
+            <textarea name="message" required class="w-full bg-slate-50 border-none rounded-2xl px-4 py-4 text-[16px] font-medium text-slate-800 focus:ring-2 focus:ring-indigo-500 outline-none placeholder:text-slate-300 resize-none" placeholder="Apa yang ingin kamu luapkan?" rows="6"></textarea>
+        </div>
+
+        <div class="flex justify-center py-2">
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAADC6MSMP3c413MWX" data-theme="light"></div>
+        </div>
+
+        <div class="pt-2">
+            <button class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-full shadow-md transition-all active:scale-95" type="submit">
+                Kirim Pengakuan
+            </button>
+        </div>
+    </form>
 </div>
 
-<div class="space-y-3">
-<label class="text-xs font-bold uppercase tracking-widest text-slate-400">Pesan</label>
-<textarea name="message" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-6 py-6 text-[1.1rem] font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none placeholder:text-slate-300 resize-none" placeholder="Tuliskan rahasiamu..." rows="7"></textarea>
+<div class="mt-6 text-center">
+    <a href="/jelajah" class="text-xs font-bold text-slate-400 hover:text-indigo-600 transition-colors flex items-center justify-center gap-1">
+        <span class="material-symbols-outlined text-[16px]">explore</span> Lihat kiriman orang lain
+    </a>
 </div>
-
-<div class="flex justify-center"><div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light"></div></div>
-
-<div class="pt-2 flex flex-col items-center gap-4">
-<button class="w-full md:w-auto px-12 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-full shadow-lg transition-all active:scale-95" type="submit">Kirim Sekarang</button>
-</div>
-</form>
-</section>
 </main>
 
-<footer class="w-full text-center py-6 border-t border-slate-100 mt-auto">
-    <p class="text-sm font-bold text-slate-400 tracking-wide">Copyright &copy; 2026 AP. All rights reserved.</p>
+<footer class="w-full text-center py-8 text-slate-400 mt-auto">
+    <p class="text-[11px] font-bold tracking-widest uppercase">Copyright &copy; 2026 AP. All rights reserved.</p>
 </footer>
 </body>
 </html>
