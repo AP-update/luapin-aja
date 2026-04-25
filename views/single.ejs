@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Luapin Aja</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    body { font-family: 'Manrope', sans-serif; background: #fdfdff; }
+    .glass-nav { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+    .icon-fill { font-variation-settings: 'FILL' 1; }
+</style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen" oncontextmenu="return false;">
+<nav class="fixed top-0 w-full z-40 glass-nav">
+<div class="max-w-[800px] mx-auto flex justify-between items-center h-16 px-6">
+<div class="flex items-center gap-4">
+    <a href="/jelajah" class="text-slate-400 hover:text-indigo-600 transition-colors mt-1" title="Kembali"><span class="material-symbols-outlined">arrow_back</span></a>
+    <a href="/" class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-indigo-600 icon-fill text-[24px]">psychology_alt</span>
+        <div class="text-xl font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Luapin Aja</div>
+    </a>
+</div>
+</div>
+</nav>
+
+<main class="flex-grow max-w-[700px] w-full mx-auto px-6 pt-28 pb-24">
+    <div class="bg-white rounded-3xl p-10 border border-slate-100 shadow-[0_10px_40px_-10px_rgba(99,102,241,0.08)] mb-8">
+        <% if (confession.category && confession.category !== 'Tanpa Kategori') { %>
+            <div class="mb-8">
+                <span class="inline-block px-4 py-1.5 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full uppercase tracking-wider"><%= confession.category %></span>
+            </div>
+        <% } %>
+        <p class="text-[1.2rem] font-semibold text-slate-800 leading-relaxed mb-10"><%= confession.message %></p>
+        <p class="text-xs text-slate-400 font-bold tracking-wide uppercase"><%= confession.pengirim || 'Anonim' %> • <%= confession.waktuFormat %></p>
+    </div>
+
+    <div class="bg-slate-50 rounded-3xl p-8 border border-slate-100">
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2 whitespace-nowrap">
+                <span class="material-symbols-outlined">forum</span> Tanggapan (<span id="totalKomen"><%= confession.komentar ? confession.komentar.length : 0 %></span>)
+            </h3>
+            <button onclick="salinLink('<%= confession.id %>')" class="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-200 text-xs font-bold whitespace-nowrap">
+                <span class="material-symbols-outlined text-[16px]">share</span> Bagikan
+            </button>
+        </div>
+
+        <div id="formKomenContainer" class="mb-8">
+            <div class="flex flex-col md:flex-row gap-3">
+                <input type="text" id="pengirimKomen" placeholder="Nama (opsional)" class="w-full md:w-1/3 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                <input type="text" id="inputKomen" placeholder="Tuliskan tanggapanmu..." class="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+                <button onclick="kirimKomen('<%= confession.id %>')" id="btnKomen" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap">Kirim</button>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-2 ml-1">*Komentar toksik disensor otomatis. Batas 1 tanggapan per post.</p>
+        </div>
+
+        <div id="listKomentar" class="space-y-4">
+            <% if (confession.komentar && confession.komentar.length > 0) { %>
+                <% confession.komentar.forEach(function(komen) { %>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100">
+                        <p class="text-[0.95rem] font-semibold text-slate-700 mb-2"><%= komen.teks %></p>
+                        <p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase"><%= komen.pengirim || 'Anonim' %> • <%= komen.waktu %></p>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p id="teksKosong" class="text-sm text-slate-400 text-center py-4">Belum ada tanggapan.</p>
+            <% } %>
+        </div>
+    </div>
+</main>
+
+<footer class="w-full text-center py-6 border-t border-slate-100 mt-auto">
+    <p class="text-sm font-bold text-slate-400 tracking-wide">Copyright &copy; 2026 AP. All rights reserved.</p>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem('komen_<%= confession.id %>')) sembunyikanFormKomen();
+});
+
+function sembunyikanFormKomen() {
+    document.getElementById('formKomenContainer').innerHTML = `<div class="bg-emerald-50 text-emerald-600 text-sm font-bold text-center p-4 rounded-xl border border-emerald-100">Kamu sudah memberikan tanggapan pada cerita ini.</div>`;
+}
+
+function salinLink(id) { 
+    navigator.clipboard.writeText(window.location.origin + '/pengakuan/' + id).then(() => alert('Tautan disalin!')); 
+}
+
+async function kirimKomen(id) {
+    const inputTeks = document.getElementById('inputKomen');
+    const inputNama = document.getElementById('pengirimKomen');
+    const btn = document.getElementById('btnKomen');
+    const teks = inputTeks.value.trim();
+    const nama = inputNama.value.trim();
+    
+    if(!teks) return;
+
+    btn.disabled = true; btn.innerText = "Mengirim...";
+
+    try {
+        const res = await fetch(`/komen/${id}`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ isi_komen: teks, pengirim: nama })
+        });
+        const result = await res.json();
+        
+        if (result.success) {
+            localStorage.setItem('komen_' + id, 'true');
+            sembunyikanFormKomen();
+            
+            if (document.getElementById('teksKosong')) document.getElementById('teksKosong').remove();
+
+            const list = document.getElementById('listKomentar');
+            const elemenBaru = document.createElement('div');
+            elemenBaru.className = "bg-white p-5 rounded-2xl border border-slate-100 shadow-sm animate-pulse";
+            elemenBaru.innerHTML = `<p class="text-[0.95rem] font-semibold text-slate-700 mb-2">${result.data.teks}</p><p class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">${result.data.pengirim} • BARU SAJA</p>`;
+            
+            list.prepend(elemenBaru);
+            const total = document.getElementById('totalKomen');
+            total.innerText = parseInt(total.innerText) + 1;
+            
+            setTimeout(() => elemenBaru.classList.remove('animate-pulse'), 1000);
+        } else {
+            if (result.message === 'Sudah berkomentar') {
+                alert('Sistem mengesan anda sudah memberikan tanggapan.');
+                localStorage.setItem('komen_' + id, 'true');
+                sembunyikanFormKomen();
+            }
+            btn.disabled = false; btn.innerText = "Kirim";
+        }
+    } catch (err) {
+        btn.disabled = false; btn.innerText = "Kirim";
+    }
+}
+</script>
+</body>
+</html>

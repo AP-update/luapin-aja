@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ruang Kurasi - Luapin Aja</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    .glass-panel { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.08); }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+    body { font-family: 'Manrope', sans-serif; background: #fdfdff; }
+</style>
+</head>
+<body class="text-slate-800 flex flex-col min-h-screen">
+<nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
+<div class="max-w-[900px] mx-auto flex justify-between items-center h-16 px-6">
+<a href="/" class="text-xl font-extrabold tracking-tighter text-indigo-600">Admin - Luapin Aja</a>
+<div class="flex items-center gap-6">
+<a class="text-sm font-bold text-rose-500 hover:text-rose-600 bg-rose-50 px-4 py-2 rounded-lg" href="/logout">Keluar</a>
+</div>
+</div>
+</nav>
+
+<main class="flex-grow max-w-[900px] w-full mx-auto pt-28 pb-24 px-6">
+<section class="grid grid-cols-3 gap-6 mb-12">
+    <div class="glass-panel p-6 rounded-2xl text-center"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total</p><p class="text-3xl font-bold text-indigo-600"><%= stats.total %></p></div>
+    <div class="glass-panel p-6 rounded-2xl text-center border-l-4 border-l-amber-400"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Menunggu</p><p class="text-3xl font-bold text-amber-500"><%= stats.pending %></p></div>
+    <div class="glass-panel p-6 rounded-2xl text-center border-l-4 border-l-emerald-400"><p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Disetujui</p><p class="text-3xl font-bold text-emerald-500"><%= stats.approved %></p></div>
+</section>
+
+<section>
+<h2 class="text-xl font-bold mb-6">Antrean Moderasi & Komentar</h2>
+<div class="glass-panel rounded-2xl overflow-hidden">
+<div class="divide-y divide-slate-100">
+    <% confessions.forEach(function(item) { %>
+        <article class="p-6 hover:bg-slate-50 transition-colors <%= item.status === 'approved' ? 'bg-slate-50/50' : 'bg-white' %>">
+            <div class="flex flex-col gap-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center gap-3 flex-wrap">
+                        <% if (item.status === 'pending') { %>
+                            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Menunggu</span>
+                        <% } else { %>
+                            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">Live</span>
+                        <% } %>
+                        <% if (item.category && item.category !== 'Tanpa Kategori') { %>
+                            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full"><%= item.category %></span>
+                        <% } %>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase"><%= item.pengirim || 'Anonim' %> • <%= item.waktuFormat %></span>
+                    </div>
+                    <div class="flex gap-2">
+                        <% if (item.status === 'pending') { %>
+                            <form action="/dashboard/approve/<%= item.id %>" method="POST" class="inline"><button type="submit" class="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg"><span class="material-symbols-outlined">check_circle</span></button></form>
+                        <% } %>
+                        <form action="/dashboard/delete/<%= item.id %>" method="POST" class="inline"><button type="submit" class="p-2 text-rose-500 hover:bg-rose-50 rounded-lg"><span class="material-symbols-outlined">delete</span></button></form>
+                    </div>
+                </div>
+                <p class="text-lg font-semibold text-slate-800"><%= item.message %></p>
+
+                <% if (item.komentar && item.komentar.length > 0) { %>
+                    <div class="mt-4 bg-white border border-slate-200 rounded-xl p-4">
+                        <p class="text-xs font-bold text-slate-400 mb-3 uppercase tracking-widest"><%= item.komentar.length %> Komentar</p>
+                        <div class="space-y-3">
+                            <% item.komentar.forEach(function(komen) { %>
+                                <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg">
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-700"><%= komen.teks %></p>
+                                        <p class="text-[10px] font-bold text-slate-400"><%= komen.pengirim %> • <%= komen.waktu %></p>
+                                    </div>
+                                    <form action="/dashboard/delete-komen/<%= item.id %>/<%= komen.id %>" method="POST" class="inline">
+                                        <button type="submit" class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-colors"><span class="material-symbols-outlined text-[18px]">close</span></button>
+                                    </form>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </article>
+    <% }); %>
+</div>
+</div>
+</section>
+</main>
+
+<footer class="w-full text-center py-6 border-t border-slate-100 mt-auto">
+    <p class="text-sm font-bold text-slate-400 tracking-wide">Copyright &copy; 2026 AP. All rights reserved.</p>
+</footer>
+</body>
+</html>
