@@ -8,11 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-    body { font-family: 'Manrope', sans-serif; background: #fdfdff; }
-    .glass-nav { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
-    .glass-card { background: #ffffff; border: 1px solid #f1f5f9; box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.08); }
+    body { font-family: 'Manrope', sans-serif; background: #f0f2f5; }
+    .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+    .social-card { background: #ffffff; border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); border: 1px solid rgba(0,0,0,0.05); }
     .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
     .icon-fill { font-variation-settings: 'FILL' 1; }
+    .btn-action { transition: all 0.2s; border-radius: 6px; }
+    .btn-action:hover { background: #f2f2f2; }
     .toast-enter { transform: translateY(-150%) translateX(-50%); opacity: 0; }
     .toast-active { transform: translateY(0) translateX(-50%); opacity: 1; }
 </style>
@@ -20,11 +22,11 @@
 <body class="text-slate-800 flex flex-col min-h-screen" oncontextmenu="return false;">
 
 <% if (success) { %>
-    <div id="toast" class="toast-enter fixed top-6 left-1/2 z-50 bg-white/90 backdrop-blur-xl border border-emerald-100 text-emerald-800 px-6 py-4 rounded-2xl flex items-center gap-4 shadow-2xl transition-all duration-700 ease-out">
+    <div id="toast" class="toast-enter fixed top-6 left-1/2 z-50 bg-white border border-emerald-100 text-emerald-800 px-6 py-4 rounded-2xl flex items-center gap-4 shadow-2xl transition-all duration-700 ease-out">
         <div class="bg-emerald-100 p-2 rounded-full flex"><span class="material-symbols-outlined icon-fill text-emerald-600">verified</span></div>
         <div>
             <h4 class="font-bold text-sm">Suara Terkirim</h4>
-            <p class="text-xs font-medium opacity-80">Menunggu tinjauan admin untuk dipublikasikan.</p>
+            <p class="text-xs font-medium opacity-80">Menunggu tinjauan admin.</p>
         </div>
     </div>
     <script>
@@ -34,66 +36,79 @@
 <% } %>
 
 <nav class="fixed top-0 w-full z-40 glass-nav">
-    <div class="max-w-[800px] mx-auto flex justify-between items-center h-16 px-6">
+    <div class="max-w-[680px] mx-auto flex justify-between items-center h-14 px-4">
         <a href="/" class="flex items-center gap-2 group">
-            <span class="material-symbols-outlined text-indigo-600 icon-fill text-[24px] group-hover:scale-110 transition-transform">psychology_alt</span>
-            <span class="text-xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Luapin Aja</span>
+            <span class="material-symbols-outlined text-indigo-600 icon-fill text-[28px]">psychology_alt</span>
+            <span class="text-lg font-bold tracking-tighter">Luapin Aja</span>
         </a>
-        <div class="hidden sm:flex items-center gap-6">
-            <a href="/tulis" class="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Tulis Pesan</a>
-        </div>
+        <a href="/tulis" class="p-2 bg-indigo-50 text-indigo-600 rounded-full hover:bg-indigo-100 transition-colors">
+            <span class="material-symbols-outlined">add</span>
+        </a>
     </div>
 </nav>
 
-<main class="max-w-[800px] w-full mx-auto px-6 pt-28 pb-20 flex-grow">
-    <div class="flex justify-between items-center mb-8 border-b border-slate-100 pb-4">
-        <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Jelajahi Suara</h2>
-        <div class="flex gap-3">
-            <a href="/" class="p-2.5 bg-white text-slate-600 rounded-full shadow-sm border border-slate-200 hover:bg-slate-50 transition-colors">
-                <span class="material-symbols-outlined text-[20px]">home</span>
-            </a>
-            <a href="/tulis" class="px-4 py-2 bg-indigo-600 text-white text-sm font-bold rounded-full shadow-md hover:bg-indigo-700 transition-colors flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">edit_square</span> Tulis
-            </a>
+<main class="max-w-[680px] w-full mx-auto px-4 pt-20 pb-20 flex-grow">
+    <div class="social-card p-4 mb-6 flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-tr from-slate-200 to-slate-100 rounded-full flex items-center justify-center text-slate-400">
+            <span class="material-symbols-outlined">person</span>
         </div>
+        <a href="/tulis" class="flex-grow bg-slate-100 hover:bg-slate-200 py-2 px-4 rounded-full text-slate-500 text-sm transition-colors text-left">
+            Apa yang kamu pikirkan? Luapin aja...
+        </a>
     </div>
 
-    <div class="space-y-8">
+    <div class="space-y-4">
         <% if (confessions.length === 0) { %>
             <div class="text-center py-12"><p class="text-slate-500 text-lg">Belum ada suara yang terdengar.</p></div>
         <% } else { %>
             <% confessions.forEach(function(confession) { %>
-                <div class="glass-card rounded-3xl overflow-hidden">
-                    <div class="p-10 bg-white relative">
-                        <div class="relative z-10">
-                            <% if (confession.category && confession.category !== 'Tanpa Kategori') { %>
-                                <div class="mb-6">
-                                    <span class="px-4 py-1.5 bg-indigo-50 text-indigo-600 text-xs font-extrabold rounded-full uppercase tracking-wider">
-                                        <%= confession.category %>
-                                    </span>
-                                </div>
-                            <% } %>
-                            <p class="text-[1.1rem] font-semibold text-slate-700 leading-relaxed mb-6"><%= confession.message %></p>
-                            <p class="text-xs text-slate-400 font-bold tracking-wide uppercase"><%= confession.pengirim || 'Anonim' %> • <%= confession.waktuFormat %></p>
+                <div class="social-card">
+                    <div class="p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold text-sm">
+                            <%= (confession.pengirim || 'A').charAt(0).toUpperCase() %>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900"><%= confession.pengirim || 'Anonim' %></h3>
+                            <p class="text-[11px] text-slate-500 font-medium"><%= confession.waktuFormat %></p>
                         </div>
                     </div>
-                    
-                    <div class="bg-slate-50/50 border-t border-slate-100 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <button onclick="kirimDukungan('<%= confession.id %>', this)" data-id="<%= confession.id %>" class="btn-dukungan w-full sm:w-auto justify-center sm:justify-start flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-rose-500 transition-colors group">
-                            <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">favorite</span>
-                            <span class="hug-count"><%= confession.hugs || 0 %> Dukungan</span>
+
+                    <div class="px-4 pb-4">
+                        <% if (confession.category && confession.category !== 'Tanpa Kategori') { %>
+                            <span class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md mb-2 inline-block">
+                                #<%= confession.category %>
+                            </span>
+                        <% } %>
+                        <p class="text-[15px] text-slate-800 leading-relaxed"><%= confession.message %></p>
+                    </div>
+
+                    <div class="px-4 py-2 flex items-center justify-between border-t border-slate-50">
+                        <div class="flex items-center gap-1">
+                            <div class="flex -space-x-1">
+                                <div class="bg-rose-500 text-white rounded-full p-0.5 border-2 border-white flex"><span class="material-symbols-outlined text-[10px] icon-fill">favorite</span></div>
+                            </div>
+                            <span class="text-xs text-slate-500 font-medium hug-count-text-<%= confession.id %>"><%= confession.hugs || 0 %> Dukungan</span>
+                        </div>
+                        <div class="text-xs text-slate-500 font-medium">
+                            <%= confession.komentar ? confession.komentar.length : 0 %> Komentar
+                        </div>
+                    </div>
+
+                    <div class="px-2 py-1 flex items-center border-t border-slate-50">
+                        <button onclick="kirimDukungan('<%= confession.id %>', this)" data-id="<%= confession.id %>" class="btn-dukungan flex-grow flex items-center justify-center gap-2 py-2 text-sm font-bold text-slate-600 btn-action group">
+                            <span class="material-symbols-outlined text-[20px] group-active:scale-125 transition-transform">favorite</span>
+                            <span>Dukung</span>
                         </button>
                         
-                        <div class="flex gap-3 w-full sm:w-auto justify-center">
-                            <a href="/pengakuan/<%= confession.id %>" class="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1.5 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 hover:bg-slate-50 text-xs font-bold">
-                                <span class="material-symbols-outlined text-[18px]">chat_bubble</span> 
-                                <span class="hidden sm:inline">Komentar</span> (<%= confession.komentar ? confession.komentar.length : 0 %>)
-                            </a>
-                            <button onclick="salinLink('<%= confession.id %>')" class="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1.5 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-200 hover:bg-slate-50 text-xs font-bold">
-                                <span class="material-symbols-outlined text-[18px]">share</span> 
-                                <span class="hidden sm:inline">Bagikan</span>
-                            </button>
-                        </div>
+                        <a href="/pengakuan/<%= confession.id %>" class="flex-grow flex items-center justify-center gap-2 py-2 text-sm font-bold text-slate-600 btn-action">
+                            <span class="material-symbols-outlined text-[20px]">chat_bubble</span> 
+                            <span>Tanggapi</span>
+                        </a>
+
+                        <button onclick="salinLink('<%= confession.id %>')" class="flex-grow flex items-center justify-center gap-2 py-2 text-sm font-bold text-slate-600 btn-action">
+                            <span class="material-symbols-outlined text-[20px]">share</span> 
+                            <span>Bagikan</span>
+                        </button>
                     </div>
                 </div>
             <% }); %>
@@ -101,46 +116,54 @@
     </div>
 </main>
 
-<footer class="w-full text-center py-6 border-t border-slate-100 mt-auto">
-    <p class="text-sm font-bold text-slate-400 tracking-wide">Copyright &copy; 2026 AP. All rights reserved.</p>
+<footer class="w-full text-center py-8 text-slate-400">
+    <p class="text-[11px] font-bold tracking-widest uppercase">Copyright &copy; 2026 AP. All rights reserved.</p>
 </footer>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.btn-dukungan').forEach(btn => {
         if (localStorage.getItem('dukungan_' + btn.dataset.id)) {
-            btn.classList.replace('text-slate-500', 'text-rose-500');
-            btn.querySelector('.material-symbols-outlined').classList.add('icon-fill');
-            btn.disabled = true;
+            formatButtonActive(btn);
         }
     });
 });
 
+function formatButtonActive(btn) {
+    btn.classList.add('text-rose-500');
+    btn.classList.remove('text-slate-600');
+    btn.querySelector('.material-symbols-outlined').classList.add('icon-fill');
+    btn.disabled = true;
+}
+
 async function kirimDukungan(id, btn) {
     if (btn.disabled) return;
+    btn.disabled = true;
     try {
         const res = await fetch(`/dukungan/${id}`, { method: 'POST' });
         const data = await res.json();
-        
         if (data.success) {
-            const span = btn.querySelector('.hug-count');
-            const icon = btn.querySelector('.material-symbols-outlined');
-            span.innerText = (parseInt(span.innerText) + 1) + ' Dukungan';
-            btn.classList.replace('text-slate-500', 'text-rose-500');
-            icon.classList.add('icon-fill');
-            btn.disabled = true;
+            const countLabel = document.querySelector('.hug-count-text-' + id);
+            let current = parseInt(countLabel.innerText);
+            countLabel.innerText = (current + 1) + ' Dukungan';
+            formatButtonActive(btn);
             localStorage.setItem('dukungan_' + id, 'true');
         } else if (data.message === 'Sudah mendukung') {
-            btn.classList.replace('text-slate-500', 'text-rose-500');
-            btn.querySelector('.material-symbols-outlined').classList.add('icon-fill');
-            btn.disabled = true;
+            formatButtonActive(btn);
             localStorage.setItem('dukungan_' + id, 'true');
+        } else {
+            btn.disabled = false;
         }
-    } catch (err) {}
+    } catch (err) {
+        btn.disabled = false;
+    }
 }
 
 function salinLink(id) { 
-    navigator.clipboard.writeText(window.location.origin + '/pengakuan/' + id).then(() => alert('Tautan disalin!')); 
+    const fullUrl = window.location.origin + '/pengakuan/' + id;
+    navigator.clipboard.writeText(fullUrl).then(() => {
+        alert('Tautan disalin!');
+    });
 }
 </script>
 </body>
